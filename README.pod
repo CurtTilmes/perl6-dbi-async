@@ -1,0 +1,65 @@
+=encoding utf-8
+
+=head1 NAME
+
+DBI::Async - Tiny async wrapper around DBIish
+
+=head1 SYNOPSIS
+
+use DBI::Async;
+
+# Pass any DBIish.connect() options 
+# connections defaults to 5
+
+my $db = DBI::Async.new('Pg', connections => 5); 
+
+# Make blocking requests:
+
+my $result = $db.query("select version()");
+say $result.array[0];
+$result.finish;
+
+# or use :async to immediately get a Promise:
+
+my $promise = $db.query("select version()", :async);
+
+await $promise.then(-> $p
+{
+    my $result = $p.result;
+    say $result.array[0];
+    $result.finish;
+});
+
+# Or even start a bunch of background queries in parallel,
+# then check the results
+
+my @list;
+
+for 1..10
+{
+    @list.push(start {
+        say "starting $_";
+        my $res = $db.query("select pg_sleep(1)::text, ?::int as val", $_);
+        say "Done #", $res.array[1];
+        $res.finish;
+    });
+}
+
+await @list;
+
+
+=head1 DESCRIPTION
+
+Passes all arguments to DBI::Async.new() through to DBIish.connect()
+except connections.
+
+Immediately opens $connections database handles.
+
+Each call to query() grabs a free handle, the prepares/executes
+the query with that handle.
+
+If no free handles are available, it will queue up the requests and
+execute them as handles are finish()ed.
+
+NB: The handle isn't returned unless you explicitly call finish, so
+always do that.
