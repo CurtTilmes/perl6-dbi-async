@@ -6,15 +6,13 @@ has $.da;
 has $.dbh;
 has $.sth handles <column-names column-types allrows row rows>;
 
-method array { $!sth.row }
+method array { LEAVE self.finish; $!sth.row }
 
-method columns { $!sth.column-names }
+method hash { LEAVE self.finish; $!sth.row(:hash) }
 
-method hash { $!sth.row(:hash) }
+method arrays { LEAVE self.finish; $!sth.allrows.eager }
 
-method arrays { $!sth.allrows }
-
-method hashes { $!sth.allrows(:array-of-hash) }
+method hashes { LEAVE self.finish; $!sth.allrows(:array-of-hash).eager }
 
 method finish
 {

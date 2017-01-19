@@ -11,7 +11,7 @@ for 1..10
     @list.push(start {
         say "starting $_";
         my $res = $db.query("select pg_sleep(1)::text, ?::int as val", $_);
-        say "Done #", $res.array[1];
+        say "Done #", $res.row[1];
         $res.finish;
     });
 }

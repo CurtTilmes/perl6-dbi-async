@@ -16,18 +16,20 @@ DBI::Async - Tiny async wrapper around DBIish
    # Make blocking requests:
 
    my $result = $db.query("select version()");
-   say $result.array[0];
+   say $result.row[0];
    $result.finish;
 
-   # or use :async to immediately get a Promise:
+   # Use array() instead of row() to auto-finish the results:
+
+   say $db.query("select version()").array[0];  # array() auto-finishes
+
+   # Use :async to immediately get a Promise:
 
    my $promise = $db.query("select version()", :async);
 
    await $promise.then(-> $p
    {
-       my $result = $p.result;
-       say $result.array[0];
-       $result.finish;
+       say $p.result.array[0];
    });
 
    # Or even start a bunch of background queries in parallel,
@@ -40,7 +42,7 @@ DBI::Async - Tiny async wrapper around DBIish
        @list.push(start {
            say "starting $_";
            my $res = $db.query("select pg_sleep(1)::text, ?::int as val", $_);
-           say "Done #", $res.array[1];
+           say "Done #", $res.row[1];
            $res.finish;
        });
    }
@@ -60,5 +62,29 @@ the query with that handle.
 If no free handles are available, it will queue up the requests and
 execute them as handles are finish()ed.
 
-NB: The handle isn't returned unless you explicitly call finish, so
-always do that.
+query() returns a DBI::Async::Results object.  It supports the basic
+methods from DBIish statement handles:
+
+ .column-names()  # Array of column names
+ .column-types()  # Array of column types
+ .rows()          # Count of rows returns
+ .row()           # Get a single row, call repeatedly to get all
+ .allrows()       # Lazy list of all rows suitable for iteration
+
+It has a special version of .finish() that returns the database handle
+to the pool to be reused by other queries.  If you access your results
+with the methods above, you must explicitly call .finish() to return
+the handle.  (Otherwise they will leak and not be available for use
+until the garbage collector gets around to reaping them.)
+
+To make this a little easier for common cases, the Results object has
+some extra methods that automatically grab the results and finish()
+the results for you.
+
+ .array()  # Return a single row as an array
+ .hash()   # Return a single row as a hash
+ .arrays() # Eagerly get all rows and return as an array of arrays
+ .hashes() # Eagerly get all rows and return as an array of hashes
+
+If and only if you use those four methods to get results, the finish()
+will be automatically called.
