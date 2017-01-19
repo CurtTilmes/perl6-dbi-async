@@ -27,7 +27,7 @@ method BUILD(:$!handles, :$!dbi-args) {}
 
 method query($query, *@params, Bool :$async)
 {
-    if my $dbh = $!handles.poll
+    if $!handles.poll -> $dbh
     {
         return $async
             ?? start { self!perform($dbh, $query, |@params) }
