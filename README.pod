@@ -6,47 +6,46 @@ DBI::Async - Tiny async wrapper around DBIish
 
 =head1 SYNOPSIS
 
-use DBI::Async;
+   use DBI::Async;
 
-# Pass any DBIish.connect() options 
-# connections defaults to 5
+   # Pass any DBIish.connect() options 
+   # connections defaults to 5
 
-my $db = DBI::Async.new('Pg', connections => 5); 
+   my $db = DBI::Async.new('Pg', connections => 5); 
 
-# Make blocking requests:
+   # Make blocking requests:
 
-my $result = $db.query("select version()");
-say $result.array[0];
-$result.finish;
+   my $result = $db.query("select version()");
+   say $result.array[0];
+   $result.finish;
 
-# or use :async to immediately get a Promise:
+   # or use :async to immediately get a Promise:
 
-my $promise = $db.query("select version()", :async);
+   my $promise = $db.query("select version()", :async);
 
-await $promise.then(-> $p
-{
-    my $result = $p.result;
-    say $result.array[0];
-    $result.finish;
-});
+   await $promise.then(-> $p
+   {
+       my $result = $p.result;
+       say $result.array[0];
+       $result.finish;
+   });
 
-# Or even start a bunch of background queries in parallel,
-# then check the results
+   # Or even start a bunch of background queries in parallel,
+   # then check the results
 
-my @list;
+   my @list;
 
-for 1..10
-{
-    @list.push(start {
-        say "starting $_";
-        my $res = $db.query("select pg_sleep(1)::text, ?::int as val", $_);
-        say "Done #", $res.array[1];
-        $res.finish;
-    });
-}
+   for 1..10
+   {
+       @list.push(start {
+           say "starting $_";
+           my $res = $db.query("select pg_sleep(1)::text, ?::int as val", $_);
+           say "Done #", $res.array[1];
+           $res.finish;
+       });
+   }
 
-await @list;
-
+   await @list;
 
 =head1 DESCRIPTION
 
