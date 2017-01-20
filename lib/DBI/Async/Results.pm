@@ -12,6 +12,8 @@ method hash { LEAVE self.finish; $!sth.row(:hash) }
 
 method arrays { LEAVE self.finish; $!sth.allrows.eager }
 
+method flatarray { LEAVE self.finish; $!sth.allrows.map({ |$_ }).eager }
+
 method hashes { LEAVE self.finish; $!sth.allrows(:array-of-hash).eager }
 
 method finish
