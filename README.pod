@@ -49,6 +49,8 @@ DBI::Async - Tiny async wrapper around DBIish
 
    await @list;
 
+   $db.dispose; # Drop all queued handles
+
 =head1 DESCRIPTION
 
 Passes all arguments to DBI::Async.new() through to DBIish.connect()
