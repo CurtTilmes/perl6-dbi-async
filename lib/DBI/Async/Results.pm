@@ -18,7 +18,7 @@ method hashes { LEAVE self.finish; $!sth.allrows(:array-of-hash).eager }
 
 method finish
 {
-    $!sth.finish if $!sth;
+    .finish with $!sth;
     $!da.reuse($!dbh) if $!da && $!dbh;
     $!da = $!dbh = $!sth = Nil;
 }

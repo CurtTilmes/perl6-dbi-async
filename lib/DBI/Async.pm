@@ -5,10 +5,12 @@ use DBI::Async::Results;
 
 unit class DBI::Async;
 
+my %prepare-cache;
+my $cache-lock = Lock.new;
+
 has Capture $!dbi-args;
 has Channel $!handles;
 has Channel $!queries = Channel.new;
-has %!prepare-cache;   # $dbh.Str => $query => $sth
 
 has $!working = False;
 has $!lock = Lock.new;
@@ -45,10 +47,24 @@ method query($query, *@params, Bool :$async)
 
 method !perform($dbh, $query, *@params)
 {
-    my $sth = %!prepare-cache{$dbh}{$query} //
-              (%!prepare-cache{$dbh}{$query} = $dbh.prepare($query));
+    my $sth;
 
-    $sth.execute(|@params);
+    try
+    {
+        $cache-lock.protect({
+            $sth = %prepare-cache{$dbh}{$query} //
+                  (%prepare-cache{$dbh}{$query} = $dbh.prepare($query));
+        });
+
+        $sth.execute(|@params);
+
+        CATCH
+        {
+            .finish with $sth;
+            self.reuse($dbh);
+            .throw;
+        }
+    }
 
     DBI::Async::Results.new(da => self, :$dbh, :$sth);
 }

@@ -16,5 +16,3 @@ await $promise.then(-> $p
 {
     say $p.result.array[0];
 });
-
-
