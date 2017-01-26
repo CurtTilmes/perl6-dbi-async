@@ -101,7 +101,7 @@ These are identical:
 
  {
      my $res = $db.query(blah blah);
-     LEAVE { $res.finish };
+     LEAVE $res.finish;
      while $res.allrows -> $r {
         ...do something...
      }
