@@ -107,9 +107,9 @@ These are identical:
 
 or
 
-{
+ {
      my $res will leave { .finish } = $db.query(blah blah);
      while $res.allrows -> $r {
         ...do something...
      }
-}
+ }
