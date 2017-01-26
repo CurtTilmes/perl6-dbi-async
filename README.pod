@@ -87,8 +87,8 @@ the results for you.
  .flatarray() # Flatten all elements of all rows into a single array
  .hashes()    # Eagerly get all rows and return as an array of hashes
 
-If and only if you use those four methods to get results, the finish()
-will be automatically called.
+If and only if you use those methods to get results, the finish() will
+be automatically called.
 
 If you do want to use, e.g. .allrows() to process your results, the
 LEAVE phaser or corresponding 'will leave' trait, can assure that the
