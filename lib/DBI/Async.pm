@@ -94,3 +94,16 @@ method reuse($dbh)
 {
     $!handles.send($dbh);
 }
+
+method dispose()
+{
+    while $!handles.poll -> $dbh
+    {
+        $dbh.dispose;
+    }
+}
+
+method DESTROY()
+{
+    self.dispose;
+}
