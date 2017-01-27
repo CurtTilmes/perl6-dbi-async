@@ -13,6 +13,8 @@ my $p = $db.query('mockdata', :async);
 
 ok $p ~~ Promise, 'Promise';
 
+# A simple query quickly goes through
+
 await Promise.anyof(Promise.in(1), $p);
 
 is $p.status, 'Kept', 'Query succeeded';
@@ -21,7 +23,7 @@ is-deeply $p.result.hashes,
           ( { col1 => 'a', col2 => 'b', 'colN' => 1 },
             { col1 => 'd', col2 => 'e', 'colN' => 2 } ), 'Check';
 
-# Can we use both handles?
+# Use both handles
 
 ok my $res1 = $db.query('mockdata'), 'Query 1';
 
@@ -32,6 +34,8 @@ ok my $res2 = $db.query('mockdata'), 'Query 2';
 $p = $db.query('mockdata', :async);
 
 ok $p ~~ Promise, 'Promise';
+
+# It times out
 
 await Promise.anyof(Promise.in(1), $p);
 
@@ -44,6 +48,7 @@ is-deeply $res1.hashes,
             { col1 => 'd', col2 => 'e', 'colN' => 2 } ), 'Check';
 
 # Now the query goes through
+
 await Promise.anyof(Promise.in(1), $p);
 
 is $p.status, 'Kept', 'Delayed query run';
