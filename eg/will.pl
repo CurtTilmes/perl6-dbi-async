@@ -1,8 +1,5 @@
 #!/usr/bin/env perl6
 
-use Log::Async;
-use Log::Async::CommandLine;
-
 use DBI::Async;
 
 my $db = DBI::Async.new('Pg');

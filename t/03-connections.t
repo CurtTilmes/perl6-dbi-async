@@ -3,6 +3,8 @@ use Test;
 
 use DBI::Async;
 
+plan 11;
+
 # Make two database handles
 
 ok my $db = DBI::Async.new('TestMock', connections => 2), 'Create DBI::Async';
@@ -49,3 +51,5 @@ is $p.status, 'Kept', 'Delayed query run';
 is-deeply $p.result.hashes,
           ( { col1 => 'a', col2 => 'b', 'colN' => 1 },
             { col1 => 'd', col2 => 'e', 'colN' => 2 } ), 'Check';
+
+done-testing;

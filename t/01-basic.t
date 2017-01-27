@@ -3,6 +3,8 @@ use Test;
 
 use DBI::Async;
 
+plan 15;
+
 ok my $db = DBI::Async.new('TestMock'), 'Create DBI::Async';
 
 ok my $res = $db.query('mockdata');
@@ -36,5 +38,4 @@ is-deeply $db.query('mockdata').hashes,
           ( { col1 => 'a', col2 => 'b', 'colN' => 1 },
             { col1 => 'd', col2 => 'e', 'colN' => 2 } ), 'Hashes';
 
-
-          
+done-testing;
