@@ -76,7 +76,7 @@ class DBI::Async {
 
             # Handle already queued and ready for use
 
-            with $!handles.poll -> $dbh {
+            while $!handles.poll -> $dbh {
                 return $dbh if self.check-handle($dbh);
             }
 
