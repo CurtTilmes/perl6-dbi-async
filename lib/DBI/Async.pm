@@ -61,18 +61,26 @@ class DBI::Async {
         }
     }
 
+    method check-handle($dbh) returns Bool {
+        if !$dbh.can('ping') or $dbh.ping {
+            return True;
+        }
+        $dbh.dispose;
+        $cache-lock.protect({ %prepare-cache{$dbh}:delete });
+        $!connections++;
+        return False;
+    }
+
     method get-handle() {
         loop {
-            if $!handles.poll -> $dbh {
-                return $dbh unless $dbh.can('ping');
-                if $dbh.ping {
-                    return $dbh;
-                }
-                else {
-                    $dbh.dispose;
-                    $!connections++;
-                }
+
+            # Handle already queued and ready for use
+
+            with $!handles.poll -> $dbh {
+                return $dbh if self.check-handle($dbh);
             }
+
+            # Can we make another handle?
 
             if $!connections > 0 {
                 $!connections--;
@@ -92,15 +100,11 @@ class DBI::Async {
                     $tries min= 60;
                 }
             }
+
+            # Wait for a handle in use to become available
         
-            my $dbh = $!handles.receive;
-            return $dbh unless $dbh.can('ping');
-            if $dbh.ping {
-                return $dbh;
-            }
-            else {
-                $dbh.dispose;
-                $!connections++;
+            with $!handles.receive -> $dbh {
+                return $dbh if self.check-handle($dbh);
             }
         }
     }
