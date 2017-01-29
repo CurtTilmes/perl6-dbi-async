@@ -100,7 +100,7 @@ class DBI::Async {
             }
             else {
                 $dbh.dispose;
-                $!connections++
+                $!connections++;
             }
         }
     }
