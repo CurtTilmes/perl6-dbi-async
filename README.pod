@@ -163,6 +163,12 @@ parallel, 10 at a time.  Since the results are processed with array(),
 the handles are returned to the pool immediately when the result is
 returned.
 
+Make sure you don't take up too many waiting threads without leaving
+enough open threads to get work done and return handles for the rest
+of the waiting queries.  You may be able to get around this by
+increasing $RAKUDO_MAX_THREADS.
+See: https://github.com/rakudo/rakudo/pull/1004
+
 =head1 RETRIES
 
 DBI::Async aggressively tries to open a database connection.  If the
