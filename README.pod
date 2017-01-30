@@ -177,5 +177,3 @@ again, 1 second, then 2 seconds, then 3 seconds... up to 60 seconds,
 finally trying to open the database connection every 60 seconds.  This
 happens both on inital database handle creation, or on subsequent
 reuse of an existing handle where the connection is dropped.
-
-=end pod
