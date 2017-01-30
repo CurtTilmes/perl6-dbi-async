@@ -39,7 +39,7 @@ class DBI::Async {
         return $self;
     }
 
-    method BUILD(:$!connections, :$!dbi-args) {}
+    submethod BUILD(:$!connections, :$!dbi-args) {}
 
     method process() {
         react {
