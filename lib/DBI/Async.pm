@@ -256,7 +256,7 @@ for you.
 If and only if you use those methods to get results, the finish() will
 be automatically called.
 
-  say $db.query("select version()".array[0];
+  say $db.query("select version()").array[0];
 
 If you do want to use, e.g. .allrows() to process your results, the
 LEAVE phaser or corresponding 'will leave' trait, can help assure that
