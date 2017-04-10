@@ -1,3 +1,5 @@
+=begin pod
+
 =encoding utf-8
 
 =head1 NAME
@@ -183,3 +185,5 @@ reuse of an existing handle where the connection is dropped.
 Copyright © 2017 United States Government as represented by _Curt
 Tilmes_.  No copyright is claimed in the United States under Title 17,
 U.S.Code. All Other Rights Reserved.
+
+=end pod
