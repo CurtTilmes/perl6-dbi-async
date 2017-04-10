@@ -8,7 +8,7 @@ DBI::Async - Tiny async wrapper around DBIish
 
    use DBI::Async;
 
-   # Pass any DBIish.connect() options 
+   # Pass any DBIish.connect() options
    # connections defaults to 5
 
    my $db = DBI::Async.new('Pg', connections => 5);
@@ -177,3 +177,9 @@ again, 1 second, then 2 seconds, then 3 seconds... up to 60 seconds,
 finally trying to open the database connection every 60 seconds.  This
 happens both on inital database handle creation, or on subsequent
 reuse of an existing handle where the connection is dropped.
+
+=head1 COPYRIGHT
+
+Copyright © 2017 United States Government as represented by _Curt
+Tilmes_.  No copyright is claimed in the United States under Title 17,
+U.S.Code. All Other Rights Reserved.

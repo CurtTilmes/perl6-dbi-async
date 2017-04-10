@@ -1,0 +1,28 @@
+{
+    "name" : "DBI::Async",
+
+    "version" : "0.1",
+
+    "source-url" : "https://github.com/CurtTilmes/perl6-dbi-async.git",
+
+    "perl" : "6.c",
+
+    "provides" : {
+        "DBI::Async" : "lib/DBI/Async.pm"
+    },
+
+    "depends" : [ "DBIish" ],
+
+    "description" : "Tiny async wrapper around DBIish",
+
+    "test-depends" : [ "Test" ],
+
+    "license" : "NASA",
+
+    "authors" : [ "Curt Tilmes <Curt.Tilmes@nasa.gov>" ],
+
+    "support" : { 
+      "source" : "https://github.com/CurtTilmes/perl6-dbi-async.git",
+      "bugtracker" : "https://github.com/CurtTilmes/perl6-dbi-async/issues"
+    }
+}
