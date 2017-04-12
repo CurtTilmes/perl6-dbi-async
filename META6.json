@@ -7,6 +7,8 @@
 
     "perl" : "6.c",
 
+    "tags" : [ "DBI", "Database", "RDBMS" ],
+    
     "provides" : {
         "DBI::Async" : "lib/DBI/Async.pm"
     },
