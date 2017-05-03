@@ -208,6 +208,13 @@ DBI::Async - Tiny async wrapper around DBIish
 
 =head1 DESCRIPTION
 
+C<DBI::Async> is an experimental wrapper around DBIish that does all
+the heavy lifting.  It manages a pool of connections and as queries
+are issued, it queues them and allocates them to a connection, gets
+the results and returns them asynchronously.  You can issue queries
+from multiple threads without worrying about managing connections.  It
+also wraps some of the mechanics of dealing with results.
+
 Passes all arguments to DBI::Async.new() through to DBIish.connect()
 except connections.
 
@@ -282,7 +289,7 @@ or
      }
  }
 
-=head1 PROMISES
+=head2 PROMISES
 
 If you include the :async adverb in a call to query(), instead of
 waiting for the result, a Promise will be returned that will be kept
@@ -318,9 +325,9 @@ Make sure you don't take up too many waiting threads without leaving
 enough open threads to get work done and return handles for the rest
 of the waiting queries.  You may be able to get around this by
 increasing $RAKUDO_MAX_THREADS.
-See: https://github.com/rakudo/rakudo/pull/1004
+Also see: https://github.com/rakudo/rakudo/pull/1004
 
-=head1 RETRIES
+=head2 RETRIES
 
 DBI::Async aggressively tries to open a database connection.  If the
 connection can't be made immediately, it will sleep a while and try

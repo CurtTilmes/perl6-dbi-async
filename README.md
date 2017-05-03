@@ -58,6 +58,8 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
+`DBI::Async` is an experimental wrapper around DBIish that does all the heavy lifting. It manages a pool of connections and as queries are issued, it queues them and allocates them to a connection, gets the results and returns them asynchronously. You can issue queries from multiple threads without worrying about managing connections. It also wraps some of the mechanics of dealing with results.
+
 Passes all arguments to DBI::Async.new() through to DBIish.connect() except connections.
 
     my $db = DBI::Async.new('Pg', connections => 5);
@@ -116,7 +118,7 @@ or
     }
 
 PROMISES
-========
+--------
 
 If you include the :async adverb in a call to query(), instead of waiting for the result, a Promise will be returned that will be kept when the results of the database query are available.
 
@@ -140,10 +142,10 @@ You can have more outstanding queries than you have database connections availab
 
 This allocates 10 database handles, then processes the 100 queries in parallel, 10 at a time. Since the results are processed with array(), the handles are returned to the pool immediately when the result is returned.
 
-Make sure you don't take up too many waiting threads without leaving enough open threads to get work done and return handles for the rest of the waiting queries. You may be able to get around this by increasing $RAKUDO_MAX_THREADS. See: https://github.com/rakudo/rakudo/pull/1004
+Make sure you don't take up too many waiting threads without leaving enough open threads to get work done and return handles for the rest of the waiting queries. You may be able to get around this by increasing $RAKUDO_MAX_THREADS. Also see: https://github.com/rakudo/rakudo/pull/1004
 
 RETRIES
-=======
+-------
 
 DBI::Async aggressively tries to open a database connection. If the connection can't be made immediately, it will sleep a while and try again, 1 second, then 2 seconds, then 3 seconds... up to 60 seconds, finally trying to open the database connection every 60 seconds. This happens both on inital database handle creation, or on subsequent reuse of an existing handle where the connection is dropped.
 
